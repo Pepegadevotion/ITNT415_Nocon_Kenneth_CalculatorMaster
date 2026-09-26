@@ -84,10 +84,11 @@ def multiply(a, b):
 
 
 def divide(a, b):
+    
     if b == 0:
-        print(Color.RED + "Cannot divide by zero." + Color.RESET)
+        print(Color.RED + "Error: cannot divide by zero." + Color.RESET)
         return None
-    return a / b
+    return round(a / b, 4)
 
 
 # ----------------------------------------------------------------------
