@@ -84,9 +84,11 @@ def multiply(a, b):
 
 
 def divide(a, b):
-    # TODO: implement on branch division_Nocon
-    # remember: handle division by zero here!
-    pass
+    
+    if b == 0:
+        print(Color.RED + "Error: cannot divide by zero." + Color.RESET)
+        return None
+    return round(a / b, 4)
 
 
 # ----------------------------------------------------------------------
