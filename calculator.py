@@ -80,8 +80,7 @@ def subtract(a, b):
 
 
 def multiply(a, b):
-    # TODO: implement on branch multiplication_Nocon
-    pass
+    return round(a * b, 4)
 
 
 def divide(a, b):
