@@ -1,19 +1,3 @@
-"""
-Calculator Master
------------------
-A menu-driven calculator built one Git branch at a time.
-
-Each math operation below is intentionally left as a stub (`pass` / TODO).
-You implement the real logic on its own feature branch:
-    addition_Nocon        -> fills in add()
-    subtraction_Nocon     -> fills in subtract()
-    multiplication_Nocon  -> fills in multiply()
-    division_Nocon        -> fills in divide()  (+ division-by-zero handling)
-
-Everything else here (menu, banner, history, formatting) is just the
-"shell" that ties the branches together on main. Feel free to tweak
-the flavor text, colors, or history feature to make it your own.
-"""
 
 import random
 
@@ -87,17 +71,12 @@ def get_number(prompt):
             print(Color.RED + random.choice(ERROR_LINES) + Color.RESET)
 
 
-# ----------------------------------------------------------------------
-# STUB FUNCTIONS — implement each of these on its matching branch.
-# ----------------------------------------------------------------------
-
 def add(a, b):
-    return (a + b, 4)
+    return round(a + b, 4)
 
 
 def subtract(a, b):
-    # TODO: implement on branch subtraction_Nocon
-    pass
+    return a - b
 
 
 def multiply(a, b):
