@@ -80,6 +80,8 @@ def subtract(a, b):
 
 
 def multiply(a, b):
+    """Return the product of a and b, rounded to avoid floating-point artifacts."""
+    # Rounding to 4 decimal places keeps results clean for typical calculator use
     return round(a * b, 4)
 
 
@@ -92,7 +94,6 @@ def divide(a, b):
 
 
 # ----------------------------------------------------------------------
-
 def show_history():
     if not history:
         print(Color.CYAN + "No calculations yet this session." + Color.RESET)
