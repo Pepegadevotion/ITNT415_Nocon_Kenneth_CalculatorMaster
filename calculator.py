@@ -92,8 +92,7 @@ def get_number(prompt):
 # ----------------------------------------------------------------------
 
 def add(a, b):
-    # TODO: implement on branch addition_Nocon
-    pass
+    return (a + b, 4)
 
 
 def subtract(a, b):
