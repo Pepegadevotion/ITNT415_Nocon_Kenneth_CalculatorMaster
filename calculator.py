@@ -80,17 +80,20 @@ def subtract(a, b):
 
 
 def multiply(a, b):
+    """Return the product of a and b, rounded to avoid floating-point artifacts."""
+    # Rounding to 4 decimal places keeps results clean for typical calculator use
     return round(a * b, 4)
 
 
 def divide(a, b):
-    # TODO: implement on branch division_Nocon
-    # remember: handle division by zero here!
-    pass
+    
+    if b == 0:
+        print(Color.RED + "Error: cannot divide by zero." + Color.RESET)
+        return None
+    return round(a / b, 4)
 
 
 # ----------------------------------------------------------------------
-
 def show_history():
     if not history:
         print(Color.CYAN + "No calculations yet this session." + Color.RESET)
