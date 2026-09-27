@@ -63,7 +63,6 @@ def print_menu():
     print(Color.YELLOW + "│ " + Color.RESET + "4 / /  Divide" + " " * 16 + Color.YELLOW + "│" + Color.RESET)
     print(Color.YELLOW + "│ " + Color.RESET + "5.     View history" + " " * 10 + Color.YELLOW + "│" + Color.RESET)
     print(Color.YELLOW + "│ " + Color.RESET + "6.     Clear history" + " " * 9 + Color.YELLOW + "│" + Color.RESET)
-    print(Color.YELLOW + "│ " + Color.RESET + "M      Use last result" + " " * 7 + Color.YELLOW + "│" + Color.RESET)
     print(Color.YELLOW + "│ " + Color.RESET + "0.     Exit" + " " * 18 + Color.YELLOW + "│" + Color.RESET)
     print(Color.YELLOW + "└──────────────────────────────┘" + Color.RESET)
 
@@ -132,7 +131,19 @@ def run():
                         print(Color.RED + random.choice(ERROR_LINES) + Color.RESET)
                         a_raw = input(first_prompt).strip()
 
-            b = get_number("Enter second number: ")
+            b_prompt = "Enter second number (or M for last result): "
+            b_raw = input(b_prompt).strip()
+            if b_raw.upper() == "M" and last_result is not None:
+                b = last_result
+                print(Color.CYAN + f"Using last result: {b}" + Color.RESET)
+            else:
+                while True:
+                    try:
+                        b = float(b_raw)
+                        break
+                    except ValueError:
+                        print(Color.RED + random.choice(ERROR_LINES) + Color.RESET)
+                        b_raw = input(b_prompt).strip()
 
             if choice == "1":
                 result = add(a, b)
