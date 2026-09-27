@@ -26,4 +26,18 @@ All branches were merged into `main` via Pull Requests on GitHub.
 - Continuous execution until the user chooses to exit
 
 ## Sample Execution
-![Sample run](sample-run.png)
+
+**Addition**
+![Addition](Add.png)
+
+**Subtraction**
+![Subtraction](Subtract.png)
+
+**Multiplication**
+![Multiplication](Multiply.png)
+
+**Division**
+![Division](Divide.png)
+
+**Session History View**
+![View history](View.png)
