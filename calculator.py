@@ -1,7 +1,5 @@
-
 import random
 
-# --- ANSI colors (most terminals, including the VM's, support these) ---
 class Color:
     HEADER = "\033[95m"
     CYAN = "\033[96m"
@@ -11,8 +9,21 @@ class Color:
     BOLD = "\033[1m"
     RESET = "\033[0m"
 
-# Keeps a running log of calculations for this session only (not saved to disk)
 history = []
+last_result = None
+
+OPERATION_ALIASES = {
+    "1": "1", "+": "1",
+    "2": "2", "-": "2",
+    "3": "3", "*": "3", "x": "3", "X": "3",
+    "4": "4", "/": "4",
+}
+
+MILESTONE_LINES = [
+    "5 calculations down — you're on a roll!",
+    "10 calculations! The calculator salutes you.",
+    "That's a lot of math. Respect.",
+]
 
 BANNER = r"""
    _____      _            _       _             __  __           _
@@ -23,7 +34,6 @@ BANNER = r"""
   \_____\__,_|_|\___|\__,_|_|\__,_|\__\___/|_|   |_|  |_|\__,_|___/\__\___|_|
 """
 
-# A little flavor text so results don't feel robotic
 SUCCESS_LINES = [
     "Crunched it.",
     "Math says yes.",
@@ -47,22 +57,18 @@ def print_banner():
 
 def print_menu():
     print(Color.YELLOW + "┌──────────────────────────────┐" + Color.RESET)
-    print(Color.YELLOW + "│ " + Color.RESET + "1. Add" + " " * 24 + Color.YELLOW + "│" + Color.RESET)
-    print(Color.YELLOW + "│ " + Color.RESET + "2. Subtract" + " " * 19 + Color.YELLOW + "│" + Color.RESET)
-    print(Color.YELLOW + "│ " + Color.RESET + "3. Multiply" + " " * 19 + Color.YELLOW + "│" + Color.RESET)
-    print(Color.YELLOW + "│ " + Color.RESET + "4. Divide" + " " * 21 + Color.YELLOW + "│" + Color.RESET)
-    print(Color.YELLOW + "│ " + Color.RESET + "5. View history" + " " * 15 + Color.YELLOW + "│" + Color.RESET)
-    print(Color.YELLOW + "│ " + Color.RESET + "0. Exit" + " " * 23 + Color.YELLOW + "│" + Color.RESET)
+    print(Color.YELLOW + "│ " + Color.RESET + "1 / +  Add" + " " * 19 + Color.YELLOW + "│" + Color.RESET)
+    print(Color.YELLOW + "│ " + Color.RESET + "2 / -  Subtract" + " " * 14 + Color.YELLOW + "│" + Color.RESET)
+    print(Color.YELLOW + "│ " + Color.RESET + "3 / *  Multiply" + " " * 14 + Color.YELLOW + "│" + Color.RESET)
+    print(Color.YELLOW + "│ " + Color.RESET + "4 / /  Divide" + " " * 16 + Color.YELLOW + "│" + Color.RESET)
+    print(Color.YELLOW + "│ " + Color.RESET + "5.     View history" + " " * 10 + Color.YELLOW + "│" + Color.RESET)
+    print(Color.YELLOW + "│ " + Color.RESET + "6.     Clear history" + " " * 9 + Color.YELLOW + "│" + Color.RESET)
+    print(Color.YELLOW + "│ " + Color.RESET + "M      Use last result" + " " * 7 + Color.YELLOW + "│" + Color.RESET)
+    print(Color.YELLOW + "│ " + Color.RESET + "0.     Exit" + " " * 18 + Color.YELLOW + "│" + Color.RESET)
     print(Color.YELLOW + "└──────────────────────────────┘" + Color.RESET)
 
 
 def get_number(prompt):
-    """
-    Shared input helper: keeps asking until the user gives a valid number.
-    This is here so every operation gets input validation for free —
-    but you're welcome to move/rewrite this logic inside your own branch
-    if you'd rather each operation handle validation itself.
-    """
     while True:
         raw = input(prompt)
         try:
@@ -80,20 +86,16 @@ def subtract(a, b):
 
 
 def multiply(a, b):
-    """Return the product of a and b, rounded to avoid floating-point artifacts."""
-    # Rounding to 4 decimal places keeps results clean for typical calculator use
     return round(a * b, 4)
 
 
 def divide(a, b):
-    
     if b == 0:
         print(Color.RED + "Error: cannot divide by zero." + Color.RESET)
         return None
     return round(a / b, 4)
 
 
-# ----------------------------------------------------------------------
 def show_history():
     if not history:
         print(Color.CYAN + "No calculations yet this session." + Color.RESET)
@@ -104,17 +106,32 @@ def show_history():
 
 
 def run():
+    global last_result
     print_banner()
     while True:
         print_menu()
-        choice = input(Color.BOLD + "Choose an option: " + Color.RESET).strip()
+        raw_choice = input(Color.BOLD + "Choose an option: " + Color.RESET).strip()
+        choice = OPERATION_ALIASES.get(raw_choice, raw_choice)
 
         if choice == "0":
             print(Color.CYAN + "Thanks for calculating. Goodbye!" + Color.RESET)
             break
 
         elif choice in ("1", "2", "3", "4"):
-            a = get_number("Enter first number: ")
+            first_prompt = "Enter first number (or M for last result): "
+            a_raw = input(Color.RESET + first_prompt).strip()
+            if a_raw.upper() == "M" and last_result is not None:
+                a = last_result
+                print(Color.CYAN + f"Using last result: {a}" + Color.RESET)
+            else:
+                while True:
+                    try:
+                        a = float(a_raw)
+                        break
+                    except ValueError:
+                        print(Color.RED + random.choice(ERROR_LINES) + Color.RESET)
+                        a_raw = input(first_prompt).strip()
+
             b = get_number("Enter second number: ")
 
             if choice == "1":
@@ -131,13 +148,20 @@ def run():
                 op_symbol = "/"
 
             if result is None:
-                print(Color.RED + "This operation hasn't been implemented yet — check out its branch!" + Color.RESET)
+                print(Color.RED + "That operation couldn't be completed." + Color.RESET)
             else:
                 print(Color.GREEN + f"{random.choice(SUCCESS_LINES)} {a} {op_symbol} {b} = {result}" + Color.RESET)
                 history.append(f"{a} {op_symbol} {b} = {result}")
+                last_result = result
+                if len(history) in (5, 10, 25, 50):
+                    print(Color.BOLD + Color.YELLOW + random.choice(MILESTONE_LINES) + Color.RESET)
 
         elif choice == "5":
             show_history()
+
+        elif choice == "6":
+            history.clear()
+            print(Color.CYAN + "History cleared." + Color.RESET)
 
         else:
             print(Color.RED + "That's not a valid menu option. Try again." + Color.RESET)
